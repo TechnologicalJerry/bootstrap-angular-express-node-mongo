@@ -1,4 +1,9 @@
 import express, { Request, Response } from "express";
 
+const app = express();
 
-console.log('Testing Server!!!!!!!');
+app.listen(5050, ()=> {
+    console.log('Server is running!!!!!!!!');
+})
+
+
