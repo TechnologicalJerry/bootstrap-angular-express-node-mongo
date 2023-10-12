@@ -2,8 +2,10 @@ import express, { Request, Response } from "express";
 
 const app = express();
 
-app.listen(5050, ()=> {
-    console.log('Server is running!!!!!!!!');
+const PORT = 5050;
+
+app.listen(PORT, () => {
+    console.log(`Server is running!!!!!!!! on PORT = ${PORT}`);
 })
 
 
