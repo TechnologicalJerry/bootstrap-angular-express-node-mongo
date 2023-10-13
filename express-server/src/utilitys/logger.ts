@@ -8,7 +8,6 @@ const log = pino({
         pid: false,
     },
     timestamp: () => `,"time":"${dayjs().format()}"`,
-    // Use pino-pretty as a transport
     prettifier: pinoPretty,
 });
 
