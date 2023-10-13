@@ -1,4 +1,3 @@
-import logger from "pino";
 import dayjs from "dayjs";
 import pino from "pino";
 import pinoPretty from "pino-pretty";
