@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import config from 'config';
 import logger from "./logger";
 
-function connect() {
+async function connect() {
     const dbUrl = config.get<string>('databadeUrl');
 
     try {
-        mongoose.connect(dbUrl);
+        await mongoose.connect(dbUrl);
         logger.info("DB connected");
     } catch (error) {
         logger.error("Could not connect to db");
