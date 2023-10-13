@@ -15,7 +15,7 @@ app.listen(PORT, async () => {
 
     await connect();
 
-    // routes(app);
+    routes(app);
 })
 
 
