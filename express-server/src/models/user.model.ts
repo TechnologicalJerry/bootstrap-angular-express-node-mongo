@@ -4,4 +4,6 @@ import bcrypt from "bcrypt";
 
 export interface UserInput {
     name: string;
+    email: string;
+    password: string;
   }
