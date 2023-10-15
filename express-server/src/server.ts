@@ -3,6 +3,7 @@ import config from 'config';
 import connect from './utilitys/connectDb';
 import routes from "./routes";
 import swaggerDocs from "./utilitys/swagger";
+import dotenv from "dotenv";
 
 dotenv.config();
 
