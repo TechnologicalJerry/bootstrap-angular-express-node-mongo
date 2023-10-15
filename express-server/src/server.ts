@@ -16,6 +16,8 @@ app.listen(PORT, async () => {
     await connect();
 
     routes(app);
+
+    swaggerDocs(app, port);
 })
 
 
