@@ -18,7 +18,7 @@ app.listen(PORT, async () => {
 
     routes(app);
 
-    swaggerDocs(app, port);
+    swaggerDocs(app, PORT);
 })
 
 
