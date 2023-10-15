@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import config from 'config';
 import connect from './utilitys/connectDb';
 import routes from "./routes";
+import swaggerDocs from "./utilitys/swagger";
 
 
 const app = express();
