@@ -4,6 +4,8 @@ import connect from './utilitys/connectDb';
 import routes from "./routes";
 import swaggerDocs from "./utilitys/swagger";
 
+dotenv.config();
+
 
 const app = express();
 
