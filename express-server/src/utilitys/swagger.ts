@@ -39,3 +39,5 @@ function swaggerDocs(app: Express, port: number) {
 
     log.info(`Docs available at http://localhost:${port}/docs`);
 }
+
+export default swaggerDocs;
