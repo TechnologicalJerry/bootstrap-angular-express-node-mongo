@@ -3,7 +3,7 @@ import config from "config";
 import bcrypt from "bcrypt";
 
 export interface UserInput {
-    name: string;
+    firstName: string;
     email: string;
     password: string;
   }
