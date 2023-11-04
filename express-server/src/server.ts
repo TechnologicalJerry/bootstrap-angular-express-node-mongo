@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
 const app = express();
 
 const PORT = config.get<number>('port');
@@ -16,11 +15,8 @@ app.use(express.json());
 
 app.listen(PORT, async () => {
     console.log(`Server is running!!!!!!!! on PORT = ${PORT}`);
-
     await connect();
-
     routes(app);
-
     swaggerDocs(app, PORT);
 })
 
