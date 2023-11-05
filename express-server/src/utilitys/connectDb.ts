@@ -4,7 +4,6 @@ import logger from "./logger";
 
 async function connect() {
     const dbUrl = config.get<string>('databadeUrl');
-
     try {
         await mongoose.connect(dbUrl);
         logger.info("DB connected");
