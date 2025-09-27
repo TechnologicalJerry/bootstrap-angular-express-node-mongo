@@ -1,33 +1,35 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import {
+    getAllUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser,
+    changeUserPassword,
+    getUserProfile
+} from "../controller/user.controller";
 
 const router = Router();
 
-// GET /api/users
-router.get("/", (req: Request, res: Response) => {
-    res.json({ message: "Get all users" });
-});
+// GET /api/users - Get all users with pagination and search
+router.get("/", getAllUsers);
 
-// GET /api/users/:id
-router.get("/:id", (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.json({ message: `Get user with id: ${id}` });
-});
+// GET /api/users/:id - Get user by ID
+router.get("/:id", getUserById);
 
-// POST /api/users
-router.post("/", (req: Request, res: Response) => {
-    res.json({ message: "Create new user" });
-});
+// POST /api/users - Create new user
+router.post("/", createUser);
 
-// PUT /api/users/:id
-router.put("/:id", (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.json({ message: `Update user with id: ${id}` });
-});
+// PUT /api/users/:id - Update user
+router.put("/:id", updateUser);
 
-// DELETE /api/users/:id
-router.delete("/:id", (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.json({ message: `Delete user with id: ${id}` });
-});
+// DELETE /api/users/:id - Delete user
+router.delete("/:id", deleteUser);
+
+// PATCH /api/users/:id/password - Change user password
+router.patch("/:id/password", changeUserPassword);
+
+// GET /api/users/:id/profile - Get user profile
+router.get("/:id/profile", getUserProfile);
 
 export default router;
