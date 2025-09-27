@@ -1,39 +1,35 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import {
+    getAllProducts,
+    getProductById,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    getProductsByCategory,
+    updateProductStock
+} from "../controller/product.controller";
 
 const router = Router();
 
-// GET /api/products
-router.get("/", (req: Request, res: Response) => {
-    res.json({ message: "Get all products" });
-});
+// GET /api/products - Get all products with pagination, search, and filters
+router.get("/", getAllProducts);
 
-// GET /api/products/:id
-router.get("/:id", (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.json({ message: `Get product with id: ${id}` });
-});
+// GET /api/products/category/:category - Get products by category
+router.get("/category/:category", getProductsByCategory);
 
-// POST /api/products
-router.post("/", (req: Request, res: Response) => {
-    res.json({ message: "Create new product" });
-});
+// GET /api/products/:id - Get product by ID
+router.get("/:id", getProductById);
 
-// PUT /api/products/:id
-router.put("/:id", (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.json({ message: `Update product with id: ${id}` });
-});
+// POST /api/products - Create new product
+router.post("/", createProduct);
 
-// DELETE /api/products/:id
-router.delete("/:id", (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.json({ message: `Delete product with id: ${id}` });
-});
+// PUT /api/products/:id - Update product
+router.put("/:id", updateProduct);
 
-// GET /api/products/category/:category
-router.get("/category/:category", (req: Request, res: Response) => {
-    const { category } = req.params;
-    res.json({ message: `Get products by category: ${category}` });
-});
+// PATCH /api/products/:id/stock - Update product stock
+router.patch("/:id/stock", updateProductStock);
+
+// DELETE /api/products/:id - Delete product
+router.delete("/:id", deleteProduct);
 
 export default router;
