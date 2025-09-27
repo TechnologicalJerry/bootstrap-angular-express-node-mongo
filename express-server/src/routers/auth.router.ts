@@ -1,35 +1,31 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import {
+    register,
+    login,
+    logout,
+    refreshToken,
+    forgotPassword,
+    resetPassword
+} from "../controller/auth.controller";
 
 const router = Router();
 
 // POST /api/auth/register
-router.post("/register", (req: Request, res: Response) => {
-    res.json({ message: "User registration" });
-});
+router.post("/register", register);
 
 // POST /api/auth/login
-router.post("/login", (req: Request, res: Response) => {
-    res.json({ message: "User login" });
-});
+router.post("/login", login);
 
 // POST /api/auth/logout
-router.post("/logout", (req: Request, res: Response) => {
-    res.json({ message: "User logout" });
-});
+router.post("/logout", logout);
 
 // POST /api/auth/refresh
-router.post("/refresh", (req: Request, res: Response) => {
-    res.json({ message: "Refresh token" });
-});
+router.post("/refresh", refreshToken);
 
 // POST /api/auth/forgot-password
-router.post("/forgot-password", (req: Request, res: Response) => {
-    res.json({ message: "Forgot password" });
-});
+router.post("/forgot-password", forgotPassword);
 
 // POST /api/auth/reset-password
-router.post("/reset-password", (req: Request, res: Response) => {
-    res.json({ message: "Reset password" });
-});
+router.post("/reset-password", resetPassword);
 
 export default router;
