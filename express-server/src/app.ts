@@ -1,5 +1,5 @@
 import express from 'express';
-import routes from "./routes";
+import router from "./routers/index.router";
 
 const app = express();
 
@@ -7,6 +7,6 @@ const app = express();
 app.use(express.json());
 
 // Routes
-routes(app);
+app.use("/api", router);
 
 export default app;
