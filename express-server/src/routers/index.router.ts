@@ -54,5 +54,6 @@ router.get("/healthcheck", (req: Request, res: Response) => {
 router.use("/users", usersRouter);
 router.use("/auth", authRouter);
 router.use("/products", productsRouter);
+router.use("/sessions", sessionsRouter);
 
 export default router;
