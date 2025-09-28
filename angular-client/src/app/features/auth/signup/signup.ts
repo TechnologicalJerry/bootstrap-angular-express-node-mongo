@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Auth, RegisterRequest } from '../../../core/services/auth';
+import { Toast } from '../../../core/services/toast';
 import { finalize } from 'rxjs/operators';
 
 
@@ -23,7 +24,8 @@ export class Signup implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: Auth
+    private authService: Auth,
+    private toastService: Toast
   ) {}
 
   ngOnInit(): void {
@@ -109,22 +111,24 @@ export class Signup implements OnInit {
         .pipe(
           finalize(() => this.isLoading = false)
         )
-        .subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.successMessage = 'Account created successfully! Please login to continue.';
-              // Redirect to login after 2 seconds
-              setTimeout(() => {
-                this.router.navigate(['/login']);
-              }, 2000);
-            } else {
-              this.errorMessage = response.message || 'Registration failed';
-            }
-          },
-          error: (error) => {
-            this.errorMessage = error;
-          }
-        });
+            .subscribe({
+              next: (response) => {
+                if (response.success) {
+                  this.successMessage = 'Account created successfully! Please login to continue.';
+                  // Redirect to login after 2 seconds
+                  setTimeout(() => {
+                    this.router.navigate(['/login']);
+                  }, 2000);
+                } else {
+                  this.errorMessage = response.message || 'Registration failed';
+                  this.toastService.error('Registration Failed', this.errorMessage);
+                }
+              },
+              error: (error) => {
+                this.errorMessage = error;
+                this.toastService.error('Registration Error', this.errorMessage);
+              }
+            });
     } else {
       this.markFormGroupTouched();
     }
