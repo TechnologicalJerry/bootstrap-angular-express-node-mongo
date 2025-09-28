@@ -1,1 +1,297 @@
-<p>signup works!</p>
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="row w-100 justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-4">
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary mb-2">Create Account</h2>
+            <p class="text-muted">Join us today and get started</p>
+          </div>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+          </div>
+
+          <!-- Success Message -->
+          <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ successMessage }}
+          </div>
+
+          <!-- Signup Form -->
+          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
+            <!-- Name Fields -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName" class="form-label fw-semibold">
+                  First Name
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <input
+                    type="text"
+                    id="firstName"
+                    formControlName="firstName"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid('firstName')"
+                    placeholder="Enter your first name"
+                    autocomplete="given-name"
+                  />
+                </div>
+                <div *ngIf="isFieldInvalid('firstName')" class="invalid-feedback d-block">
+                  {{ getFieldError('firstName') }}
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="lastName" class="form-label fw-semibold">
+                  Last Name
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <input
+                    type="text"
+                    id="lastName"
+                    formControlName="lastName"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid('lastName')"
+                    placeholder="Enter your last name"
+                    autocomplete="family-name"
+                  />
+                </div>
+                <div *ngIf="isFieldInvalid('lastName')" class="invalid-feedback d-block">
+                  {{ getFieldError('lastName') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Username Field -->
+            <div class="mb-3">
+              <label for="userName" class="form-label fw-semibold">
+                Username
+                <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-at"></i>
+                </span>
+                <input
+                  type="text"
+                  id="userName"
+                  formControlName="userName"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('userName')"
+                  placeholder="Choose a username"
+                  autocomplete="username"
+                />
+              </div>
+              <div *ngIf="isFieldInvalid('userName')" class="invalid-feedback d-block">
+                {{ getFieldError('userName') }}
+              </div>
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label fw-semibold">
+                Email Address
+                <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-envelope"></i>
+                </span>
+                <input
+                  type="email"
+                  id="email"
+                  formControlName="email"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('email')"
+                  placeholder="Enter your email"
+                  autocomplete="email"
+                />
+              </div>
+              <div *ngIf="isFieldInvalid('email')" class="invalid-feedback d-block">
+                {{ getFieldError('email') }}
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+              <label for="password" class="form-label fw-semibold">
+                Password
+                <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <input
+                  type="password"
+                  id="password"
+                  formControlName="password"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('password')"
+                  placeholder="Create a strong password"
+                  autocomplete="new-password"
+                />
+              </div>
+              <!-- Password Strength Indicator -->
+              <div *ngIf="signupForm.get('password')?.value" class="mt-2">
+                <div class="progress" style="height: 4px;">
+                  <div class="progress-bar" 
+                       [class.bg-danger]="getPasswordStrength() === 'weak'"
+                       [class.bg-warning]="getPasswordStrength() === 'medium'"
+                       [class.bg-success]="getPasswordStrength() === 'strong'"
+                       [style.width.%]="getPasswordStrength() === 'weak' ? 33 : getPasswordStrength() === 'medium' ? 66 : 100">
+                  </div>
+                </div>
+                <small class="text-muted">
+                  Password strength: 
+                  <span [class.text-danger]="getPasswordStrength() === 'weak'"
+                        [class.text-warning]="getPasswordStrength() === 'medium'"
+                        [class.text-success]="getPasswordStrength() === 'strong'">
+                    {{ getPasswordStrength() | titlecase }}
+                  </span>
+                </small>
+              </div>
+              <div *ngIf="isFieldInvalid('password')" class="invalid-feedback d-block">
+                {{ getFieldError('password') }}
+              </div>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label fw-semibold">
+                Confirm Password
+                <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-lock-fill"></i>
+                </span>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('confirmPassword')"
+                  placeholder="Confirm your password"
+                  autocomplete="new-password"
+                />
+              </div>
+              <div *ngIf="isFieldInvalid('confirmPassword')" class="invalid-feedback d-block">
+                {{ getFieldError('confirmPassword') }}
+              </div>
+            </div>
+
+            <!-- Gender and DOB Fields -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="gender" class="form-label fw-semibold">
+                  Gender
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-gender-ambiguous"></i>
+                  </span>
+                  <select
+                    id="gender"
+                    formControlName="gender"
+                    class="form-select"
+                    [class.is-invalid]="isFieldInvalid('gender')"
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </select>
+                </div>
+                <div *ngIf="isFieldInvalid('gender')" class="invalid-feedback d-block">
+                  {{ getFieldError('gender') }}
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="dob" class="form-label fw-semibold">
+                  Date of Birth
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-calendar"></i>
+                  </span>
+                  <input
+                    type="date"
+                    id="dob"
+                    formControlName="dob"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid('dob')"
+                    max="{{ today }}"
+                  />
+                </div>
+                <div *ngIf="isFieldInvalid('dob')" class="invalid-feedback d-block">
+                  {{ getFieldError('dob') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="terms" required>
+                <label class="form-check-label text-muted" for="terms">
+                  I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
+                  and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn btn-primary w-100 py-2 fw-semibold"
+              [disabled]="isLoading"
+            >
+              <span *ngIf="!isLoading">
+                <i class="bi bi-person-plus me-2"></i>
+                Create Account
+              </span>
+              <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center">
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                Creating Account...
+              </span>
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="text-center my-1">
+            <hr class="my-3">
+            <span class="text-muted bg-white px-3">or</span>
+          </div>
+
+          <!-- Login Link -->
+          <div class="text-center mt-1">
+            <p class="text-muted mb-0">
+              Already have an account?
+              <a routerLink="/login" class="text-decoration-none fw-semibold">
+                Sign in here
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
