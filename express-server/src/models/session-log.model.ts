@@ -20,6 +20,17 @@ export interface ISessionLog extends Document {
     expiresAt: Date;
     createdAt: Date;
     updatedAt: Date;
+    
+    // Instance methods
+    updateActivity(): Promise<ISessionLog>;
+    logout(): Promise<ISessionLog>;
+}
+
+// Static methods interface
+export interface ISessionLogModel extends mongoose.Model<ISessionLog> {
+    findActiveSessions(userId: string): mongoose.Query<ISessionLog[], ISessionLog>;
+    findBySessionId(sessionId: string): mongoose.Query<ISessionLog | null, ISessionLog>;
+    deactivateAllUserSessions(userId: string): mongoose.Query<any, ISessionLog>;
 }
 
 const SessionLogSchema: Schema = new Schema<ISessionLog>(
@@ -138,4 +149,4 @@ SessionLogSchema.methods.logout = function() {
     return this.save();
 };
 
-export const SessionLog = mongoose.model<ISessionLog>('SessionLogs', SessionLogSchema);
+export const SessionLog = mongoose.model<ISessionLog, ISessionLogModel>('SessionLogs', SessionLogSchema);

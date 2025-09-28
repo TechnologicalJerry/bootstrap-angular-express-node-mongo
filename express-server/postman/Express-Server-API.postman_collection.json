@@ -473,6 +473,193 @@
 			"description": "User management endpoints"
 		},
 		{
+			"name": "Sessions",
+			"item": [
+				{
+					"name": "Get User Sessions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sessions/user/{{user_id}}?page=1&limit=10&activeOnly=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"user",
+								"{{user_id}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "activeOnly",
+									"value": "false"
+								}
+							]
+						},
+						"description": "Get user session history with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Sessions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sessions/active",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"active"
+							]
+						},
+						"description": "Get current user's active sessions"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sessions/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"stats"
+							]
+						},
+						"description": "Get current user's session statistics"
+					},
+					"response": []
+				},
+				{
+					"name": "Terminate Session",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sessionId\": \"sess_1234567890_abc123def\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sessions/{{session_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"{{session_id}}"
+							]
+						},
+						"description": "Terminate a specific session"
+					},
+					"response": []
+				},
+				{
+					"name": "Terminate All Sessions",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sessions/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"all"
+							]
+						},
+						"description": "Terminate all sessions for current user"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Session Activity",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sessionId\": \"sess_1234567890_abc123def\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sessions/activity",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"activity"
+							]
+						},
+						"description": "Update session activity timestamp"
+					},
+					"response": []
+				}
+			],
+			"description": "Session management endpoints for tracking user login sessions"
+		},
+		{
 			"name": "Products",
 			"item": [
 				{
@@ -786,6 +973,11 @@
 		},
 		{
 			"key": "reset_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "session_id",
 			"value": "",
 			"type": "string"
 		}

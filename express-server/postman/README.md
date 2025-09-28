@@ -64,6 +64,14 @@ The server should start on `http://localhost:5050`
 - **PATCH** `/api/products/:id/stock` - Update product stock
 - **DELETE** `/api/products/:id` - Delete product
 
+### Sessions
+- **GET** `/api/sessions/user/:userId` - Get user session history (with pagination)
+- **GET** `/api/sessions/active` - Get current user's active sessions
+- **GET** `/api/sessions/stats` - Get current user's session statistics
+- **DELETE** `/api/sessions/:sessionId` - Terminate a specific session
+- **DELETE** `/api/sessions/all` - Terminate all sessions for current user
+- **PATCH** `/api/sessions/activity` - Update session activity timestamp
+
 ## Environment Variables
 
 | Variable | Description | Example |
@@ -73,6 +81,7 @@ The server should start on `http://localhost:5050`
 | `refresh_token` | JWT refresh token | Auto-populated after login |
 | `user_id` | User ID for testing | Auto-populated after user creation |
 | `product_id` | Product ID for testing | Auto-populated after product creation |
+| `session_id` | Session ID for testing | Auto-populated after login |
 | `reset_token` | Password reset token | Manual entry when needed |
 
 ## Testing Workflow
@@ -101,6 +110,15 @@ Start with the **Health Check** request to verify the server is running.
 4. **Update Product** - Modify product information
 5. **Update Product Stock** - Test stock operations (set, add, subtract)
 6. **Delete Product** - Remove products
+
+### 5. Session Management
+1. **Login** - Login to create a session (sessionId will be auto-populated)
+2. **Get Active Sessions** - View current user's active sessions
+3. **Get Session Statistics** - View session analytics and device breakdown
+4. **Get User Sessions** - View session history with pagination
+5. **Update Session Activity** - Test session activity tracking
+6. **Terminate Session** - End a specific session
+7. **Terminate All Sessions** - End all user sessions
 
 ## Request Examples
 
@@ -143,6 +161,37 @@ Start with the **Health Check** request to verify the server is running.
     "screen": "6.1 inch"
   },
   "isActive": true
+}
+```
+
+### Session Management Examples
+
+#### Get User Sessions
+```
+GET /api/sessions/user/{{user_id}}?page=1&limit=10&activeOnly=false
+```
+
+#### Get Active Sessions
+```
+GET /api/sessions/active
+```
+
+#### Get Session Statistics
+```
+GET /api/sessions/stats
+```
+
+#### Terminate Session
+```json
+{
+  "sessionId": "sess_1234567890_abc123def"
+}
+```
+
+#### Update Session Activity
+```json
+{
+  "sessionId": "sess_1234567890_abc123def"
 }
 ```
 
