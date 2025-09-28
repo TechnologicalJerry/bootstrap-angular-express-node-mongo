@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.model';
+import { SessionLog } from '../models/session-log.model';
+import { parseDeviceInfo, generateSessionId } from '../utilitys/device-parser';
 import log from '../utilitys/logger';
 
 // Generate JWT tokens
@@ -123,9 +125,35 @@ export const login = async (req: Request, res: Response) => {
         // Generate tokens
         const { accessToken, refreshToken } = generateTokens((user._id as any).toString());
 
+        // Parse device information
+        const deviceInfo = parseDeviceInfo(req);
+        const sessionId = generateSessionId();
+
+        // Create session log
+        const sessionLog = new SessionLog({
+            userId: user._id,
+            sessionId,
+            loginTime: new Date(),
+            ipAddress: deviceInfo.ipAddress,
+            userAgent: deviceInfo.userAgent,
+            deviceType: deviceInfo.deviceType,
+            browser: deviceInfo.browser,
+            os: deviceInfo.os,
+            isActive: true,
+            lastActivity: new Date(),
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+        });
+
+        await sessionLog.save();
+
         log.info({
             userId: user._id,
-            email: user.email
+            email: user.email,
+            sessionId,
+            deviceType: deviceInfo.deviceType,
+            browser: deviceInfo.browser,
+            os: deviceInfo.os,
+            ipAddress: deviceInfo.ipAddress
         }, 'User logged in successfully');
 
         res.status(200).json({
@@ -142,7 +170,8 @@ export const login = async (req: Request, res: Response) => {
                     dob: user.dob
                 },
                 accessToken,
-                refreshToken
+                refreshToken,
+                sessionId
             }
         });
 
@@ -158,9 +187,29 @@ export const login = async (req: Request, res: Response) => {
 // Logout user
 export const logout = async (req: Request, res: Response) => {
     try {
-        // In a real application, you might want to blacklist the token
-        // For now, we'll just return a success message
-        log.info({}, 'User logged out');
+        const { sessionId } = req.body;
+        
+        if (sessionId) {
+            // Find and deactivate the specific session
+            const session = await SessionLog.findOne({ 
+                sessionId, 
+                isActive: true 
+            });
+            
+            if (session) {
+                await session.logout();
+                log.info({
+                    sessionId,
+                    userId: session.userId
+                }, 'User session logged out');
+            }
+        } else if (req.user) {
+            // If no sessionId provided but user is authenticated, deactivate all user sessions
+            await SessionLog.deactivateAllUserSessions(req.user._id);
+            log.info({
+                userId: req.user._id
+            }, 'All user sessions logged out');
+        }
         
         res.status(200).json({
             success: true,
