@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import usersRouter from "./users.router";
 import authRouter from "./auth.router";
 import productsRouter from "./products.router";
+import sessionsRouter from "./sessions.router";
 
 const router = Router();
 
@@ -17,7 +18,8 @@ router.get("/healthcheck", (req: Request, res: Response) => {
         endpoints: {
             auth: "/api/auth",
             users: "/api/users", 
-            products: "/api/products"
+            products: "/api/products",
+            sessions: "/api/sessions"
         },
         features: [
             "🔐 JWT Authentication",
@@ -27,7 +29,9 @@ router.get("/healthcheck", (req: Request, res: Response) => {
             "📄 Pagination",
             "✅ Input Validation",
             "🧪 Comprehensive Testing",
-            "📚 Postman Collection"
+            "📚 Postman Collection",
+            "📊 Session Tracking",
+            "🖥️ Device Analytics"
         ]
     };
     
