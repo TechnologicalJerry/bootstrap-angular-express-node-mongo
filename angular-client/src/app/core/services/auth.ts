@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { Api, ApiResponse } from './api';
+import { Toast } from './toast';
 
 export interface LoginRequest {
-  email: string;
+  userId: string;
   password: string;
 }
 
@@ -21,20 +22,30 @@ export interface RegisterRequest {
 export interface LoginResponse {
   success: boolean;
   message: string;
-  token?: string;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
+  data?: {
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      userName: string;
+      email: string;
+      gender: string;
+      dob: string;
+    };
+    accessToken: string;
+    refreshToken: string;
+    sessionId: string;
   };
 }
 
 export interface AuthUser {
   id: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
   email: string;
-  name: string;
-  role: string;
+  gender: string;
+  dob: string;
 }
 
 @Injectable({
@@ -43,6 +54,7 @@ export interface AuthUser {
 export class Auth {
   private readonly TOKEN_KEY = 'authToken';
   private readonly USER_KEY = 'authUser';
+  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -52,7 +64,8 @@ export class Auth {
 
   constructor(
     private Api: Api,
-    private router: Router
+    private router: Router,
+    private toastService: Toast
   ) {
     this.initializeAuth();
   }
@@ -74,10 +87,13 @@ export class Auth {
     return this.Api.post<LoginResponse>('/auth/login', credentials)
       .pipe(
         tap(response => {
-          if (response.success && response.token && response.user) {
-            this.setAuthData(response.token, response.user);
-            this.currentUserSubject.next(response.user);
+          if (response.success && response.data?.accessToken && response.data?.user) {
+            this.setAuthData(response.data.accessToken, response.data.user, response.data.refreshToken);
+            this.currentUserSubject.next(response.data.user);
             this.isAuthenticatedSubject.next(true);
+            this.toastService.success('Login Successful', `Welcome back, ${response.data.user.firstName}!`);
+          } else {
+            this.toastService.error('Login Failed', response.message || 'Invalid credentials');
           }
         })
       );
@@ -85,14 +101,50 @@ export class Auth {
 
   register(userData: RegisterRequest): Observable<ApiResponse> {
     console.log('userData in auth service', userData);
-    return this.Api.post<ApiResponse>('/auth/register', userData);
+    return this.Api.post<ApiResponse>('/auth/register', userData)
+      .pipe(
+        tap(response => {
+          if (response.success) {
+            this.toastService.success('Registration Successful', 'Account created successfully! Please login to continue.');
+          } else {
+            this.toastService.error('Registration Failed', response.message || 'Registration failed');
+          }
+        })
+      );
   }
 
   logout(): void {
-    this.clearAuthData();
-    this.currentUserSubject.next(null);
-    this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/login']);
+    // Get refresh token before clearing data
+    const refreshToken = this.getRefreshToken();
+    
+    if (refreshToken) {
+      // Call logout API
+      this.Api.post('/auth/logout', { refreshToken })
+        .subscribe({
+          next: (response) => {
+            console.log('Logout successful:', response);
+            this.toastService.success('Logout Successful', 'You have been logged out successfully');
+          },
+          error: (error) => {
+            console.error('Logout API error:', error);
+            this.toastService.warning('Logout Warning', 'Logged out locally, but server logout failed');
+          },
+          complete: () => {
+            // Clear local data regardless of API response
+            this.clearAuthData();
+            this.currentUserSubject.next(null);
+            this.isAuthenticatedSubject.next(false);
+            this.router.navigate(['/login']);
+          }
+        });
+    } else {
+      // No refresh token, just clear local data
+      this.clearAuthData();
+      this.currentUserSubject.next(null);
+      this.isAuthenticatedSubject.next(false);
+      this.toastService.info('Logged Out', 'You have been logged out');
+      this.router.navigate(['/login']);
+    }
   }
 
   getToken(): string | null {
@@ -110,10 +162,13 @@ export class Auth {
     return this.isAuthenticatedSubject.value;
   }
 
-  private setAuthData(token: string, user: AuthUser): void {
+  private setAuthData(token: string, user: AuthUser, refreshToken?: string): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem(this.TOKEN_KEY, token);
       localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+      if (refreshToken) {
+        localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
+      }
     }
   }
 
@@ -129,7 +184,15 @@ export class Auth {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(this.TOKEN_KEY);
       localStorage.removeItem(this.USER_KEY);
+      localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     }
+  }
+
+  private getRefreshToken(): string | null {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+    }
+    return null;
   }
 
   // Additional auth methods
