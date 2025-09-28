@@ -1,0 +1,238 @@
+// Hero Section Styles
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  padding-top: 2rem; // Account for fixed header
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="50" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="30" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.hero-content {
+  padding: 2rem 0;
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 768px) {
+      font-size: 2.5rem;
+    }
+  }
+
+  .hero-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    max-width: 500px;
+
+    @media (max-width: 768px) {
+      font-size: 1.1rem;
+    }
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .btn {
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      &.btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+
+        &:hover {
+          background: linear-gradient(45deg, #0056b3, #004085);
+          box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+      }
+
+      &.btn-outline-primary {
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        color: white;
+        background: transparent;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: white;
+          color: white;
+        }
+      }
+    }
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+      align-items: stretch;
+
+      .btn {
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.hero-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+
+  .hero-illustration {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+
+    i {
+      font-size: 4rem;
+      animation: float 3s ease-in-out infinite;
+    }
+  }
+
+  .floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+
+    .floating-icon {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+
+      i {
+        font-size: 1.2rem;
+        color: white;
+      }
+
+      &.icon-1 {
+        top: 20%;
+        right: 10%;
+        animation: float 2s ease-in-out infinite;
+        animation-delay: 0s;
+      }
+
+      &.icon-2 {
+        bottom: 30%;
+        left: 15%;
+        animation: float 2.5s ease-in-out infinite;
+        animation-delay: 0.5s;
+      }
+
+      &.icon-3 {
+        top: 60%;
+        right: 20%;
+        animation: float 3s ease-in-out infinite;
+        animation-delay: 1s;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-illustration {
+      width: 250px;
+      height: 250px;
+
+      i {
+        font-size: 3rem;
+      }
+    }
+
+    .floating-elements .floating-icon {
+      width: 35px;
+      height: 35px;
+
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 992px) {
+  .hero-section {
+    text-align: center;
+
+    .hero-content {
+      margin-bottom: 3rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 2rem 0;
+
+    .hero-content {
+      .hero-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .hero-description {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+}
