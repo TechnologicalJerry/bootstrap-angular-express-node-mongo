@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Auth, LoginRequest } from '../../../core/services/auth';
+import { Toast } from '../../../core/services/toast';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -22,7 +23,8 @@ export class Login implements OnInit {
     private authService: Auth,
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: Toast
   ) { }
 
   ngOnInit(): void {
@@ -37,7 +39,7 @@ export class Login implements OnInit {
 
   private initializeForm(): void {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      userId: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -48,7 +50,7 @@ export class Login implements OnInit {
       this.errorMessage = '';
       
       const credentials: LoginRequest = {
-        email: this.loginForm.value.email,
+        userId: this.loginForm.value.userId,
         password: this.loginForm.value.password
       };
 
@@ -56,18 +58,20 @@ export class Login implements OnInit {
         .pipe(
           finalize(() => this.isLoading = false)
         )
-        .subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.router.navigate([this.returnUrl]);
-            } else {
-              this.errorMessage = response.message || 'Login failed';
-            }
-          },
-          error: (error) => {
-            this.errorMessage = error;
-          }
-        });
+            .subscribe({
+              next: (response) => {
+                if (response.success) {
+                  this.router.navigate([this.returnUrl]);
+                } else {
+                  this.errorMessage = response.message || 'Login failed';
+                  this.toastService.error('Login Failed', this.errorMessage);
+                }
+              },
+              error: (error) => {
+                this.errorMessage = error;
+                this.toastService.error('Login Error', this.errorMessage);
+              }
+            });
     } else {
       this.markFormGroupTouched();
     }
@@ -84,6 +88,9 @@ export class Login implements OnInit {
     const field = this.loginForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
+        if (fieldName === 'userId') {
+          return 'Username or email is required';
+        }
         return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
       }
       if (field.errors['email']) {

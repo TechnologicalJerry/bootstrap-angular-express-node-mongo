@@ -18,28 +18,28 @@
 
           <!-- Login Form -->
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-            <!-- Email Field -->
+            <!-- Username/Email Field -->
             <div class="mb-3">
-              <label for="email" class="form-label fw-semibold">
-                Email Address
+              <label for="userId" class="form-label fw-semibold">
+                Username or Email
                 <span class="text-danger">*</span>
               </label>
               <div class="input-group">
                 <span class="input-group-text">
-                  <i class="bi bi-envelope"></i>
+                  <i class="bi bi-person"></i>
                 </span>
                 <input
-                  type="email"
-                  id="email"
-                  formControlName="email"
+                  type="text"
+                  id="userId"
+                  formControlName="userId"
                   class="form-control"
-                  [class.is-invalid]="isFieldInvalid('email')"
-                  placeholder="Enter your email"
-                  autocomplete="email"
+                  [class.is-invalid]="isFieldInvalid('userId')"
+                  placeholder="Enter your username or email"
+                  autocomplete="username"
                 />
               </div>
-              <div *ngIf="isFieldInvalid('email')" class="invalid-feedback d-block">
-                {{ getFieldError('email') }}
+              <div *ngIf="isFieldInvalid('userId')" class="invalid-feedback d-block">
+                {{ getFieldError('userId') }}
               </div>
             </div>
 
