@@ -1,5 +1,6 @@
 import config from 'config';
 import connect from './utilitys/dbConnect';
+import { runSessionCleanup } from './utilitys/session-cleanup';
 import app from './app';
 import dotenv from "dotenv";
 
@@ -30,6 +31,15 @@ app.listen(PORT, async () => {
     console.log('🔄 Connecting to database...\n');
     
     await connect();
+    
+    // Run session cleanup on startup
+    try {
+        console.log('🧹 Running session cleanup...');
+        await runSessionCleanup();
+        console.log('✅ Session cleanup completed');
+    } catch (error) {
+        console.log('⚠️ Session cleanup failed:', error);
+    }
     
     console.log('\n🎉 ===========================================');
     console.log('🎉         SERVER READY TO USE!');
